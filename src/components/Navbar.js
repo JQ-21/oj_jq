@@ -24,9 +24,9 @@ const Navbar = () => {
   return (
     <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div className="logo" style={{ color: 'white', fontSize: '20px', marginRight: '24px' }}>
+        <Link to="/" className="logo" style={{ color: 'white', fontSize: '20px', marginRight: '24px', textDecoration: 'none' }}>
           Online Judge
-        </div>
+        </Link>
         <Menu
           theme="dark"
           mode="horizontal"
