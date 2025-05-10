@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Avatar } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { HomeOutlined, CodeOutlined, HistoryOutlined, UserOutlined } from '@ant-design/icons';
 
@@ -19,24 +19,31 @@ const Navbar = () => {
       icon: <HistoryOutlined />,
       label: <Link to="/submissions">提交记录</Link>,
     },
-    {
-      key: '/login',
-      icon: <UserOutlined />,
-      label: <Link to="/login">登录</Link>,
-    },
   ];
 
   return (
-    <Header>
-      <div className="logo" style={{ float: 'left', color: 'white', fontSize: '20px', marginRight: '24px' }}>
-        Online Judge
+    <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="logo" style={{ color: 'white', fontSize: '20px', marginRight: '24px' }}>
+          Online Judge
+        </div>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          selectedKeys={[location.pathname]}
+          items={menuItems}
+          style={{ flex: 1 }}
+        />
       </div>
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        selectedKeys={[location.pathname]}
-        items={menuItems}
-      />
+      <Link to="/login">
+        <Avatar
+          icon={<UserOutlined />}
+          style={{
+            backgroundColor: '#808080',
+            cursor: 'pointer'
+          }}
+        />
+      </Link>
     </Header>
   );
 };
