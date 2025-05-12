@@ -1,14 +1,19 @@
 import React from 'react';
-import { Card, Form, Input, Button, message } from 'antd';
+import { Card, Form, Input, Button, message, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
+import { useUserStore } from '../store';
 
 const Login = () => {
   const navigate = useNavigate();
+  const login = useUserStore(state => state.login);
 
   const onFinish = (values) => {
     // 这里添加登录逻辑
     console.log('登录信息:', values);
+    login({
+      username: values.username,
+    });
     message.success('登录成功！');
     navigate('/');
   };
@@ -47,9 +52,14 @@ const Login = () => {
             </Button>
           </Form.Item>
 
-          <div style={{ textAlign: 'center' }}>
-            还没有账号？ <Link to="/register">立即注册</Link>
-          </div>
+          <Row justify="space-between">
+            <Col>
+              <Link to="/forgot-password">忘记密码？</Link>
+            </Col>
+            <Col>
+              还没有账号？ <Link to="/register">立即注册</Link>
+            </Col>
+          </Row>
         </Form>
       </Card>
     </div>

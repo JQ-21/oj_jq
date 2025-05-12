@@ -1,84 +1,106 @@
-import React from 'react';
-import { Card, Typography, Divider, Button } from 'antd';
-import { useParams, useNavigate } from 'react-router-dom';
-import { CodeOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { Row, Col, Card, Button, Select, message } from 'antd';
+import Editor from '@monaco-editor/react';
 
-const { Title, Paragraph } = Typography;
+const { Option } = Select;
 
 const ProblemDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const [problem, setProblem] = useState(null);
+  const [code, setCode] = useState('');
+  const [language, setLanguage] = useState('cpp');
+  const [loading, setLoading] = useState(true);
 
-  // 模拟题目数据
-  const problem = {
-    id: id,
-    title: '两数之和',
-    description: '给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标。',
-    inputFormat: '第一行输入一个数组 nums，第二行输入目标值 target',
-    outputFormat: '返回两个整数的下标',
-    examples: [
-      {
-        input: 'nums = [2,7,11,15], target = 9',
-        output: '[0,1]',
-        explanation: '因为 nums[0] + nums[1] == 9，返回 [0, 1]'
-      }
-    ],
-    constraints: [
-      '2 <= nums.length <= 104',
-      '-109 <= nums[i] <= 109',
-      '-109 <= target <= 109'
-    ]
+  useEffect(() => {
+    // 模拟加载题目数据
+    setTimeout(() => {
+      setProblem({
+        id: id,
+        title: '两数之和',
+        description: '给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标。',
+        examples: [
+          {
+            input: 'nums = [2,7,11,15], target = 9',
+            output: '[0,1]',
+            explanation: '因为 nums[0] + nums[1] == 9，返回 [0, 1]'
+          }
+        ]
+      });
+      setLoading(false);
+    }, 500);
+  }, [id]);
+
+  const handleSubmit = () => {
+    if (!code.trim()) {
+      message.error('请输入代码！');
+      return;
+    }
+    message.success('代码提交成功！');
   };
 
+  if (loading) {
+    return <div>加载中...</div>;
+  }
+
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <Card>
-        <Title level={2}>{problem.title}</Title>
-        <Button 
-          type="primary" 
-          icon={<CodeOutlined />}
-          onClick={() => navigate(`/submit/${id}`)}
-          style={{ marginBottom: '20px' }}
-        >
-          提交代码
-        </Button>
-
-        <Divider />
-        
-        <Title level={4}>题目描述</Title>
-        <Paragraph>{problem.description}</Paragraph>
-
-        <Title level={4}>输入格式</Title>
-        <Paragraph>{problem.inputFormat}</Paragraph>
-
-        <Title level={4}>输出格式</Title>
-        <Paragraph>{problem.outputFormat}</Paragraph>
-
-        <Title level={4}>示例</Title>
-        {problem.examples.map((example, index) => (
-          <Card key={index} style={{ marginBottom: '16px' }} type="inner">
-            <Paragraph>
-              <strong>输入：</strong> {example.input}
-            </Paragraph>
-            <Paragraph>
-              <strong>输出：</strong> {example.output}
-            </Paragraph>
-            {example.explanation && (
-              <Paragraph>
-                <strong>解释：</strong> {example.explanation}
-              </Paragraph>
-            )}
-          </Card>
-        ))}
-
-        <Title level={4}>限制条件</Title>
-        <ul>
-          {problem.constraints.map((constraint, index) => (
-            <li key={index}>{constraint}</li>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Card title={`题目 ${id} - ${problem.title}`}>
+          <h3>题目描述</h3>
+          <p>{problem.description}</p>
+          
+          <h3>示例</h3>
+          {problem.examples.map((example, index) => (
+            <Card key={index} style={{ marginBottom: '16px' }} type="inner">
+              <p><strong>输入：</strong> {example.input}</p>
+              <p><strong>输出：</strong> {example.output}</p>
+              {example.explanation && (
+                <p><strong>解释：</strong> {example.explanation}</p>
+              )}
+            </Card>
           ))}
-        </ul>
-      </Card>
-    </div>
+        </Card>
+      </Col>
+      
+      <Col span={12}>
+        <Card title="代码编辑器">
+          <div style={{ marginBottom: '16px' }}>
+            <Select
+              value={language}
+              onChange={setLanguage}
+              style={{ width: '200px' }}
+            >
+              <Option value="cpp">C++</Option>
+              <Option value="java">Java</Option>
+              <Option value="python">Python</Option>
+              <Option value="javascript">JavaScript</Option>
+            </Select>
+          </div>
+          
+          <Editor
+            height="500px"
+            language={language}
+            value={code}
+            onChange={setCode}
+            theme="vs-dark"
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineNumbers: 'on',
+              automaticLayout: true,
+            }}
+            loading={<div>加载编辑器中...</div>}
+          />
+
+          <div style={{ marginTop: '16px', textAlign: 'right' }}>
+            <Button type="primary" onClick={handleSubmit}>
+              提交代码
+            </Button>
+          </div>
+        </Card>
+      </Col>
+    </Row>
   );
 };
 
