@@ -2,13 +2,20 @@ import React from 'react';
 import { Card, Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
+import useUserStore from '../store/userStore';
 
 const Register = () => {
   const navigate = useNavigate();
+  const login = useUserStore(state => state.login);
 
   const onFinish = (values) => {
     // 这里添加注册逻辑
     console.log('注册信息:', values);
+    // 注册成功后自动登录
+    login({
+      username: values.username,
+      email: values.email
+    });
     message.success('注册成功！');
     navigate('/login');
   };
